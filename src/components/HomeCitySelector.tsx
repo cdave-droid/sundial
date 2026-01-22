@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Home, Search, MapPin } from 'lucide-react';
 import { SpiralAnimation } from './SpiralAnimation';
+import { Particles } from './ui/particles';
 
 interface HomeCitySelectorProps {
   onSelect: (city: City) => void;
@@ -23,6 +24,18 @@ export function HomeCitySelector({ onSelect }: HomeCitySelectorProps) {
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Spiral Animation Background */}
       <SpiralAnimation />
+      
+      {/* Particles overlay - gold/amber theme */}
+      <Particles 
+        className="absolute inset-0 z-[1]"
+        quantity={80}
+        staticity={30}
+        ease={80}
+        size={0.6}
+        color="#f59e0b"
+        vx={0}
+        vy={0}
+      />
       
       {/* Content overlay */}
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
