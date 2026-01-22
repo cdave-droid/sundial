@@ -63,8 +63,8 @@ export function HomeCitySelector({
         {/* Logo and Title */}
         <div className="text-center mb-8">
           
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
-            TimeSync
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3 text-center">
+            SUNDIAL 
           </h1>
           <p className="text-lg text-muted-foreground max-w-md mx-auto">
             Find the perfect meeting time across timezones
