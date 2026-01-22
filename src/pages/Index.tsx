@@ -53,6 +53,13 @@ const Index = () => {
         staticity={60}
         ease={100}
       />
+      {/* Vignette overlay */}
+      <div 
+        className="fixed inset-0 z-[1] pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(9, 9, 11, 0.4) 70%, rgba(9, 9, 11, 0.8) 100%)'
+        }}
+      />
       
       {/* Header */}
       <header className="border-b border-amber-500/20 bg-zinc-900/80 backdrop-blur-md sticky top-0 z-20">
