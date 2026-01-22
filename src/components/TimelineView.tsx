@@ -17,8 +17,8 @@ const WORK_END = 17;
 export function TimelineView({ cities, homeCity, baseTime, onTimeSelect }: TimelineViewProps) {
   const timelineRef = useRef<HTMLDivElement>(null);
 
-  // Order cities with home city first
-  const orderedCities = [homeCity, ...cities.filter(c => c.id !== homeCity.id)];
+  // Order cities with home city first, with null safety
+  const orderedCities = [homeCity, ...cities.filter(c => c && c.id !== homeCity?.id)];
 
   const getWorkHoursInTimeline = (city: City) => {
     const localTime = getTimeInTimezone(baseTime, city.timezone);
