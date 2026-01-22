@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { City, popularCities } from '@/lib/timezones';
 import { Input } from '@/components/ui/input';
-import { Globe, Search, MapPin } from 'lucide-react';
+import { Search, MapPin } from 'lucide-react';
 import { SpiralAnimation } from './SpiralAnimation';
+import { EarthGlobe } from './EarthGlobe';
 import { Particles } from './ui/particles';
 
 interface HomeCitySelectorProps {
@@ -92,9 +93,9 @@ export function HomeCitySelector({ onSelect }: HomeCitySelectorProps) {
       {/* Content overlay */}
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-4">
         {/* Logo and Title */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center p-4 rounded-full bg-primary/20 backdrop-blur-sm mb-6">
-            <Globe className="h-12 w-12 text-primary" />
+        <div className="text-center mb-8">
+          <div className="mb-4">
+            <EarthGlobe size={200} showStars className="mx-auto" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
             TimeSync
