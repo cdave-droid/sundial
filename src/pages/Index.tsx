@@ -96,16 +96,6 @@ const Index = () => {
           <TimeInput value={baseTime} onChange={setBaseTime} />
         </section>
 
-        {/* Timeline View */}
-        <section className="mb-8">
-          <TimelineView 
-            cities={selectedCities} 
-            homeCity={homeCity}
-            baseTime={baseTime} 
-            onTimeSelect={setBaseTime}
-          />
-        </section>
-
         {/* Cities Grid */}
         <section className="mb-8">
           <div className="flex items-center justify-between mb-6">
@@ -137,6 +127,16 @@ const Index = () => {
               />
             ))}
           </div>
+        </section>
+
+        {/* Timeline View */}
+        <section className="mb-8">
+          <TimelineView 
+            cities={selectedCities} 
+            homeCity={homeCity}
+            baseTime={baseTime} 
+            onTimeSelect={setBaseTime}
+          />
         </section>
 
         {/* Tips Section */}
