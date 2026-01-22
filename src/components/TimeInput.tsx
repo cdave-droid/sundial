@@ -80,34 +80,44 @@ export function TimeInput({ value, onChange }: TimeInputProps) {
       
       <div className="space-y-2">
         <Label className="text-sm font-medium">Time</Label>
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="text"
-              value={hours}
-              onChange={(e) => {
-                const val = e.target.value.replace(/\D/g, '').slice(0, 2);
-                setHours(val);
-                handleTimeChange(val, minutes);
-              }}
-              className="w-16 pl-10 text-center font-mono text-lg"
-              maxLength={2}
-            />
-          </div>
-          <span className="text-2xl font-bold text-muted-foreground">:</span>
-          <Input
-            type="text"
-            value={minutes}
-            onChange={(e) => {
-              const val = e.target.value.replace(/\D/g, '').slice(0, 2);
-              setMinutes(val);
-              handleTimeChange(hours, val);
-            }}
-            className="w-16 text-center font-mono text-lg"
-            maxLength={2}
-          />
-        </div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-[140px] justify-start text-left font-normal"
+              )}
+            >
+              <Clock className="mr-2 h-4 w-4" />
+              {hours}:{minutes}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-48 p-2" align="start">
+            <div className="grid grid-cols-3 gap-1 max-h-[200px] overflow-y-auto">
+              {Array.from({ length: 24 }, (_, h) => (
+                [0, 30].map(m => {
+                  const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                  const isSelected = hours === h.toString().padStart(2, '0') && minutes === m.toString().padStart(2, '0');
+                  return (
+                    <Button
+                      key={timeStr}
+                      variant={isSelected ? "default" : "ghost"}
+                      size="sm"
+                      className="text-xs font-mono"
+                      onClick={() => {
+                        setHours(h.toString().padStart(2, '0'));
+                        setMinutes(m.toString().padStart(2, '0'));
+                        handleTimeChange(h.toString().padStart(2, '0'), m.toString().padStart(2, '0'));
+                      }}
+                    >
+                      {timeStr}
+                    </Button>
+                  );
+                })
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
       
       <Button variant="secondary" onClick={setToNow} className="h-10">
