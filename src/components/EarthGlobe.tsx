@@ -36,6 +36,26 @@ function CityPin({ city, isHome, radius }: CityPinProps) {
 
   return (
     <group>
+      {/* Night light - point light emanating from city */}
+      <pointLight
+        position={position.clone().add(pinDirection.clone().multiplyScalar(0.05)).toArray()}
+        color={isHome ? "#fbbf24" : "#f59e0b"}
+        intensity={0.5}
+        distance={0.8}
+        decay={2}
+      />
+      
+      {/* City light glow on surface */}
+      <mesh position={position.clone().sub(pinDirection.clone().multiplyScalar(0.01))}>
+        <circleGeometry args={[0.06, 32]} />
+        <meshBasicMaterial 
+          color={isHome ? "#fbbf24" : "#f59e0b"} 
+          transparent
+          opacity={0.4}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      
       {/* Outer glow sphere */}
       <mesh position={position}>
         <sphereGeometry args={[0.045, 16, 16]} />
@@ -52,7 +72,7 @@ function CityPin({ city, isHome, radius }: CityPinProps) {
         <meshStandardMaterial 
           color={isHome ? "#fbbf24" : "#f59e0b"} 
           emissive={isHome ? "#fbbf24" : "#f59e0b"}
-          emissiveIntensity={0.8}
+          emissiveIntensity={1}
         />
       </mesh>
       
@@ -62,7 +82,7 @@ function CityPin({ city, isHome, radius }: CityPinProps) {
         <meshStandardMaterial 
           color={isHome ? "#fbbf24" : "#f59e0b"}
           emissive={isHome ? "#fbbf24" : "#f59e0b"}
-          emissiveIntensity={0.4}
+          emissiveIntensity={0.6}
         />
       </mesh>
       
