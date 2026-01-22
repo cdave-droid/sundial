@@ -80,14 +80,13 @@ const Index = () => {
             
             {/* Text content */}
             <div className="text-center lg:text-left flex-1">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 text-amber-400 mb-4">
-                <Clock className="h-4 w-4" />
-                <span className="text-sm font-medium">Schedule meetings across timezones</span>
-              </div>
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
                 Find the Perfect Meeting Time
               </h2>
-              
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 text-amber-400">
+                <Clock className="h-4 w-4" />
+                <span className="text-sm font-medium">Schedule meetings across timezones</span>
+              </div>
             </div>
           </div>
         </section>
