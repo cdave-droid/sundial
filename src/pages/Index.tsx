@@ -44,24 +44,24 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+      <header className="border-b border-amber-500/20 bg-zinc-900/95 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <EarthGlobe size={40} />
               <div>
-                <h1 className="text-xl font-bold text-foreground">TimeSync</h1>
-                <p className="text-sm text-muted-foreground">Compare timezones instantly</p>
+                <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "'Dancing Script', cursive" }}>Sundial</h1>
+                <p className="text-sm text-amber-400/80">Synchronize your life</p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <Home className="h-4 w-4 text-primary" />
-              <span className="text-muted-foreground">Home:</span>
-              <span className="font-medium text-foreground">{homeCity.name}</span>
+              <Home className="h-4 w-4 text-amber-500" />
+              <span className="text-zinc-400">Home:</span>
+              <span className="font-medium text-white">{homeCity.name}</span>
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="text-xs text-muted-foreground hover:text-foreground"
+                className="text-xs text-zinc-400 hover:text-white hover:bg-amber-500/10"
                 onClick={() => setHomeCity(null)}
               >
                 Change
@@ -167,9 +167,10 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border/50 py-6 mt-12">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>TimeSync — Making global collaboration easier</p>
+      <footer className="border-t border-amber-500/20 bg-zinc-900/95 py-6 mt-12">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-white text-lg mb-1" style={{ fontFamily: "'Dancing Script', cursive" }}>Sundial</p>
+          <p className="text-sm text-amber-400/80">Synchronize your life</p>
         </div>
       </footer>
     </div>
