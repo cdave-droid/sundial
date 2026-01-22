@@ -82,7 +82,7 @@ export function HomeCitySelector({
         {/* Logo and Title */}
         <div className="text-center mb-8">
           
-          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-3 text-center relative">
+          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-3 text-center relative" style={{ fontFamily: "'Dancing Script', cursive" }}>
             <span 
               className="bg-gradient-to-b from-white via-white to-transparent bg-clip-text text-transparent animate-pulse"
               style={{
@@ -91,7 +91,7 @@ export function HomeCitySelector({
                 animation: 'pulse 3s ease-in-out infinite'
               }}
             >
-              SUNDIAL
+              Sundial
             </span>
           </h1>
           <p className="text-xl md:text-2xl text-primary font-medium max-w-lg mx-auto h-8">
