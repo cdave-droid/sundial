@@ -63,8 +63,17 @@ export function HomeCitySelector({
         {/* Logo and Title */}
         <div className="text-center mb-8">
           
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3 text-center">
-            SUNDIAL 
+          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-3 text-center relative">
+            <span 
+              className="bg-gradient-to-b from-white via-white to-transparent bg-clip-text text-transparent animate-pulse"
+              style={{
+                WebkitTextStroke: '2px #f59e0b',
+                textShadow: '0 0 30px rgba(245, 158, 11, 0.5)',
+                animation: 'pulse 3s ease-in-out infinite'
+              }}
+            >
+              SUNDIAL
+            </span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-md mx-auto">
             Find the perfect meeting time across timezones
