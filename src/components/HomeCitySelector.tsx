@@ -83,11 +83,17 @@ export function HomeCitySelector({
         <div className="text-center mb-8">
           
           <h1 
-            className="text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-3 text-center" 
+            className="text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-3 text-center animate-[float_3s_ease-in-out_infinite]" 
             style={{ fontFamily: "'Dancing Script', cursive" }}
           >
             Sundial
           </h1>
+          <style>{`
+            @keyframes float {
+              0%, 100% { transform: translateY(0px); }
+              50% { transform: translateY(-10px); }
+            }
+          `}</style>
           <p className="text-xl md:text-2xl text-primary font-medium max-w-lg mx-auto h-8">
             {displayedTagline}
             <span className="animate-pulse text-primary">|</span>
