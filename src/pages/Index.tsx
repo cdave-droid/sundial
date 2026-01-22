@@ -37,29 +37,12 @@ const Index = () => {
   const allCities = [homeCity, ...selectedCities.filter(c => c.id !== homeCity.id)];
   return <div className="min-h-screen bg-zinc-950 relative overflow-hidden">
       {/* Particle background layers */}
-      <Particles 
-        className="fixed inset-0 z-0 h-full w-full" 
-        quantity={150} 
-        color="#f59e0b" 
-        size={0.6}
-        staticity={30}
-        ease={80}
-      />
-      <Particles 
-        className="fixed inset-0 z-0 h-full w-full" 
-        quantity={50} 
-        color="#ffffff" 
-        size={0.4}
-        staticity={60}
-        ease={100}
-      />
+      <Particles className="fixed inset-0 z-0 h-full w-full" quantity={150} color="#f59e0b" size={0.6} staticity={30} ease={80} />
+      <Particles className="fixed inset-0 z-0 h-full w-full" quantity={50} color="#ffffff" size={0.4} staticity={60} ease={100} />
       {/* Vignette overlay */}
-      <div 
-        className="fixed inset-0 z-[1] pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(9, 9, 11, 0.4) 70%, rgba(9, 9, 11, 0.8) 100%)'
-        }}
-      />
+      <div className="fixed inset-0 z-[1] pointer-events-none" style={{
+      background: 'radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(9, 9, 11, 0.4) 70%, rgba(9, 9, 11, 0.8) 100%)'
+    }} />
       
       {/* Header */}
       <header className="border-b border-amber-500/20 bg-zinc-900/80 backdrop-blur-md sticky top-0 z-20">
@@ -104,10 +87,7 @@ const Index = () => {
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
                 Find the Perfect Meeting Time
               </h2>
-              <p className="text-zinc-400 max-w-2xl">
-                Select a date and time, then see it reflected across all your chosen cities. 
-                Perfect for coordinating with global teams.
-              </p>
+              
             </div>
           </div>
         </section>
