@@ -15,6 +15,7 @@ export function HomeCitySelector({
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const [displayedTagline, setDisplayedTagline] = useState('');
+  const [showSearchBox, setShowSearchBox] = useState(false);
   const tagline = "Your world, perfectly synchronized";
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -54,6 +55,8 @@ export function HomeCitySelector({
         currentIndex++;
       } else {
         clearInterval(typeInterval);
+        // Show search box after tagline finishes
+        setTimeout(() => setShowSearchBox(true), 300);
       }
     }, 80);
     return () => clearInterval(typeInterval);
@@ -101,7 +104,7 @@ export function HomeCitySelector({
         </div>
         
         {/* Simple Entry Box */}
-        <div className="w-full max-w-md">
+        <div className={`w-full max-w-md transition-all duration-700 ease-out ${showSearchBox ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <label className="block text-sm font-medium text-muted-foreground mb-2 text-center">
             Enter your home city to get started
           </label>
