@@ -109,7 +109,7 @@ export function HomeCitySelector({
             <Input ref={inputRef} type="text" placeholder="Search for a city..." value={search} onChange={e => {
             setSearch(e.target.value);
             setIsOpen(true);
-          }} onFocus={() => setIsOpen(true)} onKeyDown={handleKeyDown} className="pl-12 pr-4 h-14 text-lg bg-white text-foreground placeholder:text-muted-foreground border-none shadow-xl rounded-xl focus:ring-2 focus:ring-primary/50" autoFocus autoComplete="off" />
+          }} onClick={() => setIsOpen(true)} onKeyDown={handleKeyDown} className="pl-12 pr-4 h-14 text-lg bg-white text-foreground placeholder:text-muted-foreground border-none shadow-xl rounded-xl focus:ring-2 focus:ring-primary/50" autoComplete="off" />
             
             {/* Dropdown */}
             {isOpen && filteredCities.length > 0 && <div ref={dropdownRef} className="absolute top-full left-0 right-0 mt-2 bg-white border-none rounded-xl shadow-xl z-50 max-h-80 overflow-y-auto scroll-smooth [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-primary/30 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-primary/50">
