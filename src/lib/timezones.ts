@@ -54,6 +54,9 @@ export const popularCities: City[] = [
   { id: '27', name: 'Berlin', country: 'Germany', timezone: 'Europe/Berlin', offset: 1, lat: 52.52, lng: 13.405 },
   { id: '28', name: 'Lagos', country: 'Nigeria', timezone: 'Africa/Lagos', offset: 1, lat: 6.5244, lng: 3.3792 },
   { id: '73', name: 'Bari', country: 'Italy', timezone: 'Europe/Rome', offset: 1, lat: 41.1171, lng: 16.8719 },
+  { id: '74', name: 'Rome', country: 'Italy', timezone: 'Europe/Rome', offset: 1, lat: 41.9028, lng: 12.4964 },
+  { id: '75', name: 'Milan', country: 'Italy', timezone: 'Europe/Rome', offset: 1, lat: 45.4642, lng: 9.1900 },
+  { id: '76', name: 'Naples', country: 'Italy', timezone: 'Europe/Rome', offset: 1, lat: 40.8518, lng: 14.2681 },
   // UTC+2
   { id: '29', name: 'Cairo', country: 'Egypt', timezone: 'Africa/Cairo', offset: 2, lat: 30.0444, lng: 31.2357 },
   { id: '30', name: 'Johannesburg', country: 'South Africa', timezone: 'Africa/Johannesburg', offset: 2, lat: -26.2041, lng: 28.0473 },
