@@ -1,8 +1,9 @@
 import { useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { Sphere, OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { City } from '@/lib/timezones';
+import earthTexture from '@/assets/earth-texture.jpg';
 
 // Convert lat/lng to 3D position on sphere
 function latLngToVector3(lat: number, lng: number, radius: number): THREE.Vector3 {
@@ -28,18 +29,34 @@ function CityPin({ city, isHome, radius }: CityPinProps) {
     [city.lat, city.lng, radius]
   );
 
+  // Create a pin that points outward from the globe center
+  const pinHeight = 0.08;
+  const pinDirection = position.clone().normalize();
+  const pinTipPosition = position.clone().add(pinDirection.clone().multiplyScalar(pinHeight));
+
   return (
-    <group position={position}>
-      <mesh>
-        <sphereGeometry args={[0.03, 16, 16]} />
+    <group>
+      {/* Pin base on globe surface */}
+      <mesh position={position}>
+        <sphereGeometry args={[0.025, 16, 16]} />
         <meshStandardMaterial 
           color={isHome ? "#f59e0b" : "#ef4444"} 
           emissive={isHome ? "#f59e0b" : "#ef4444"}
-          emissiveIntensity={0.5}
+          emissiveIntensity={0.6}
         />
       </mesh>
+      
+      {/* Pin stem */}
+      <mesh position={position.clone().add(pinDirection.clone().multiplyScalar(pinHeight / 2))}>
+        <cylinderGeometry args={[0.008, 0.008, pinHeight, 8]} />
+        <meshStandardMaterial 
+          color={isHome ? "#f59e0b" : "#ef4444"}
+        />
+      </mesh>
+      
+      {/* City label */}
       <Html
-        position={[0, 0.08, 0]}
+        position={pinTipPosition.toArray()}
         center
         style={{
           pointerEvents: 'none',
@@ -48,7 +65,7 @@ function CityPin({ city, isHome, radius }: CityPinProps) {
       >
         <div className={`px-2 py-1 rounded-md text-xs font-medium whitespace-nowrap shadow-lg ${
           isHome 
-            ? 'bg-amber-500 text-white' 
+            ? 'bg-primary text-primary-foreground' 
             : 'bg-card text-foreground border border-border'
         }`}>
           {city.name}
@@ -67,6 +84,10 @@ interface EarthProps {
 function Earth({ cities = [], homeCity, autoRotate = true }: EarthProps) {
   const earthRef = useRef<THREE.Group>(null);
   const radius = 1;
+  
+  // Load Earth texture
+  const texture = useLoader(THREE.TextureLoader, earthTexture);
+  texture.colorSpace = THREE.SRGBColorSpace;
 
   useFrame((_, delta) => {
     if (earthRef.current && autoRotate) {
@@ -76,22 +97,12 @@ function Earth({ cities = [], homeCity, autoRotate = true }: EarthProps) {
 
   return (
     <group ref={earthRef}>
-      {/* Ocean */}
+      {/* Earth with texture */}
       <Sphere args={[radius, 64, 64]}>
         <meshStandardMaterial
-          color="#1e40af"
+          map={texture}
           roughness={0.8}
           metalness={0.1}
-        />
-      </Sphere>
-      
-      {/* Land approximation - using a slightly larger sphere with transparency */}
-      <Sphere args={[radius + 0.001, 64, 64]}>
-        <meshStandardMaterial
-          color="#22c55e"
-          roughness={0.9}
-          transparent
-          opacity={0.4}
         />
       </Sphere>
 
@@ -108,11 +119,11 @@ function Earth({ cities = [], homeCity, autoRotate = true }: EarthProps) {
 
 function Atmosphere() {
   return (
-    <Sphere args={[1.15, 32, 32]}>
+    <Sphere args={[1.08, 32, 32]}>
       <meshBasicMaterial
-        color="#60a5fa"
+        color="#88ccff"
         transparent
-        opacity={0.1}
+        opacity={0.15}
         side={THREE.BackSide}
       />
     </Sphere>
@@ -177,9 +188,9 @@ export function EarthGlobe({
         gl={{ antialias: true, alpha: true }}
         style={{ background: 'transparent' }}
       >
-        <ambientLight intensity={0.4} />
-        <directionalLight position={[5, 3, 5]} intensity={1} />
-        <directionalLight position={[-5, -3, -5]} intensity={0.3} />
+        <ambientLight intensity={0.6} />
+        <directionalLight position={[5, 3, 5]} intensity={1.2} />
+        <directionalLight position={[-5, -3, -5]} intensity={0.4} />
         {showStars && <Stars />}
         <Earth cities={cities} homeCity={homeCity} autoRotate={!isHero} />
         <Atmosphere />
