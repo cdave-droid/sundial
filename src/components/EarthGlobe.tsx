@@ -36,13 +36,23 @@ function CityPin({ city, isHome, radius }: CityPinProps) {
 
   return (
     <group>
+      {/* Outer glow sphere */}
+      <mesh position={position}>
+        <sphereGeometry args={[0.045, 16, 16]} />
+        <meshBasicMaterial 
+          color={isHome ? "#fbbf24" : "#f59e0b"} 
+          transparent
+          opacity={0.3}
+        />
+      </mesh>
+      
       {/* Pin base on globe surface */}
       <mesh position={position}>
         <sphereGeometry args={[0.025, 16, 16]} />
         <meshStandardMaterial 
-          color={isHome ? "#f59e0b" : "#ef4444"} 
-          emissive={isHome ? "#f59e0b" : "#ef4444"}
-          emissiveIntensity={0.6}
+          color={isHome ? "#fbbf24" : "#f59e0b"} 
+          emissive={isHome ? "#fbbf24" : "#f59e0b"}
+          emissiveIntensity={0.8}
         />
       </mesh>
       
@@ -50,7 +60,9 @@ function CityPin({ city, isHome, radius }: CityPinProps) {
       <mesh position={position.clone().add(pinDirection.clone().multiplyScalar(pinHeight / 2))}>
         <cylinderGeometry args={[0.008, 0.008, pinHeight, 8]} />
         <meshStandardMaterial 
-          color={isHome ? "#f59e0b" : "#ef4444"}
+          color={isHome ? "#fbbf24" : "#f59e0b"}
+          emissive={isHome ? "#fbbf24" : "#f59e0b"}
+          emissiveIntensity={0.4}
         />
       </mesh>
       
@@ -119,14 +131,26 @@ function Earth({ cities = [], homeCity, autoRotate = true }: EarthProps) {
 
 function Atmosphere() {
   return (
-    <Sphere args={[1.08, 32, 32]}>
-      <meshBasicMaterial
-        color="#88ccff"
-        transparent
-        opacity={0.15}
-        side={THREE.BackSide}
-      />
-    </Sphere>
+    <>
+      {/* Inner gold glow */}
+      <Sphere args={[1.02, 32, 32]}>
+        <meshBasicMaterial
+          color="#f59e0b"
+          transparent
+          opacity={0.08}
+          side={THREE.BackSide}
+        />
+      </Sphere>
+      {/* Outer atmosphere with gold tint */}
+      <Sphere args={[1.08, 32, 32]}>
+        <meshBasicMaterial
+          color="#fbbf24"
+          transparent
+          opacity={0.12}
+          side={THREE.BackSide}
+        />
+      </Sphere>
+    </>
   );
 }
 
