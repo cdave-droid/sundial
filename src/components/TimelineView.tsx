@@ -76,19 +76,23 @@ export function TimelineView({ cities, homeCity, baseTime, onTimeSelect }: Timel
     return segments;
   };
 
-  const handleTimelineClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleTimelineClick = (e: React.MouseEvent<HTMLDivElement>, city: City) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const percentage = x / rect.width;
-    const hour = Math.floor(percentage * 24);
-    const minute = Math.round((percentage * 24 - hour) * 60);
+    const clickedHour = Math.floor(percentage * 24);
+    const clickedMinute = Math.round((percentage * 24 - clickedHour) * 60);
     
-    // Create new date with selected time in home city's perspective
-    const homeTime = getTimeInTimezone(baseTime, homeCity.timezone);
-    const newDate = new Date(baseTime);
-    const homeOffset = homeTime.getHours() - baseTime.getHours();
+    // Calculate the time difference between the clicked city and UTC
+    const cityTime = getTimeInTimezone(baseTime, city.timezone);
+    const cityCurrentHour = cityTime.getHours() + cityTime.getMinutes() / 60;
     
-    newDate.setHours(hour - homeOffset, minute, 0, 0);
+    // Calculate how much to shift the base time
+    const targetHour = clickedHour + clickedMinute / 60;
+    const hourDiff = targetHour - cityCurrentHour;
+    
+    // Create new date by shifting the base time
+    const newDate = new Date(baseTime.getTime() + hourDiff * 60 * 60 * 1000);
     onTimeSelect(newDate);
   };
 
@@ -172,7 +176,7 @@ export function TimelineView({ cities, homeCity, baseTime, onTimeSelect }: Timel
               <div 
                 ref={isHome ? timelineRef : undefined}
                 className={`flex-1 h-8 bg-muted/30 rounded-lg relative overflow-hidden cursor-pointer hover:bg-muted/40 transition-colors ${isHome ? 'ring-2 ring-primary/30' : ''}`}
-                onClick={handleTimelineClick}
+                onClick={(e) => handleTimelineClick(e, city)}
               >
                 {HOURS.filter((_, i) => i % 6 === 0).map((hour) => (
                   <div
