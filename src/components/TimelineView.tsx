@@ -107,13 +107,13 @@ export function TimelineView({ cities, homeCity, baseTime, onTimeSelect }: Timel
   const selectedPosition = (selectedHour / 24) * 100;
 
   return (
-    <Card className="p-6 bg-card border-border/50">
+    <Card className="p-6 bg-zinc-800/60 border-amber-500/20">
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="text-lg font-semibold text-foreground">
+          <h3 className="text-lg font-semibold text-white">
             24-Hour Timeline
           </h3>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-sm text-zinc-400 mt-1">
             Click anywhere on the timeline to select a meeting time
           </p>
         </div>
@@ -121,7 +121,7 @@ export function TimelineView({ cities, homeCity, baseTime, onTimeSelect }: Timel
       
       
       {/* Hour labels */}
-      <div className="flex mb-2 ml-28 text-xs text-muted-foreground">
+      <div className="flex mb-2 ml-28 text-xs text-zinc-500">
         {HOURS.filter((_, i) => i % 3 === 0).map((hour) => (
           <div 
             key={hour} 
@@ -163,32 +163,32 @@ export function TimelineView({ cities, homeCity, baseTime, onTimeSelect }: Timel
           return (
             <div key={city.id} className="flex items-center gap-4">
               <div className="w-28 flex-shrink-0">
-                <div className={`font-medium text-sm truncate flex items-center gap-1.5 ${isHome ? 'text-primary' : 'text-foreground'}`}>
+                <div className={`font-medium text-sm truncate flex items-center gap-1.5 ${isHome ? 'text-amber-400' : 'text-white'}`}>
                   {isHome && <Home className="h-3.5 w-3.5 flex-shrink-0" />}
                   {city.name}
                 </div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-xs text-zinc-500">
                   {localHour.toString().padStart(2, '0')}:{localMinute.toString().padStart(2, '0')}
-                  {isHome && <span className="ml-1 text-primary">(You)</span>}
+                  {isHome && <span className="ml-1 text-amber-400">(You)</span>}
                 </div>
               </div>
               
               <div 
                 ref={isHome ? timelineRef : undefined}
-                className={`flex-1 h-8 bg-muted/30 rounded-lg relative overflow-hidden cursor-pointer hover:bg-muted/40 transition-colors ${isHome ? 'ring-2 ring-primary/30' : ''}`}
+                className={`flex-1 h-8 bg-zinc-700/50 rounded-lg relative overflow-hidden cursor-pointer hover:bg-zinc-700/70 transition-colors ${isHome ? 'ring-2 ring-amber-500/30' : ''}`}
                 onClick={(e) => handleTimelineClick(e, city)}
               >
                 {HOURS.filter((_, i) => i % 6 === 0).map((hour) => (
                   <div
                     key={hour}
-                    className="absolute top-0 bottom-0 w-px bg-border/50"
+                    className="absolute top-0 bottom-0 w-px bg-zinc-600/50"
                     style={{ left: `${(hour / 24) * 100}%` }}
                   />
                 ))}
                 
                 {!wrapsAround ? (
                   <div
-                    className="absolute top-1 bottom-1 bg-chart-1/40 rounded"
+                    className="absolute top-1 bottom-1 bg-amber-500/30 rounded"
                     style={{
                       left: `${workStartPercent}%`,
                       width: `${workWidth}%`,
@@ -197,14 +197,14 @@ export function TimelineView({ cities, homeCity, baseTime, onTimeSelect }: Timel
                 ) : (
                   <>
                     <div
-                      className="absolute top-1 bottom-1 bg-chart-1/40 rounded-l"
+                      className="absolute top-1 bottom-1 bg-amber-500/30 rounded-l"
                       style={{
                         left: `${workStartPercent}%`,
                         width: `${100 - workStartPercent}%`,
                       }}
                     />
                     <div
-                      className="absolute top-1 bottom-1 bg-chart-1/40 rounded-r"
+                      className="absolute top-1 bottom-1 bg-amber-500/30 rounded-r"
                       style={{
                         left: 0,
                         width: `${(workEndPos / 24) * 100}%`,
@@ -215,19 +215,19 @@ export function TimelineView({ cities, homeCity, baseTime, onTimeSelect }: Timel
                 
                 {/* Current time marker */}
                 <div
-                  className="absolute top-0 bottom-0 w-1 bg-primary z-10 transition-all duration-150"
+                  className="absolute top-0 bottom-0 w-1 bg-amber-400 z-10 transition-all duration-150"
                   style={{ left: `${currentPosition}%`, transform: 'translateX(-50%)' }}
                 >
-                  <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rounded-full" />
+                  <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-amber-400 rounded-full" />
                 </div>
                 
                 {/* Night overlay */}
                 <div
-                  className="absolute top-0 bottom-0 bg-foreground/10 rounded-l-lg pointer-events-none"
+                  className="absolute top-0 bottom-0 bg-zinc-900/40 rounded-l-lg pointer-events-none"
                   style={{ left: 0, width: `${(6 / 24) * 100}%` }}
                 />
                 <div
-                  className="absolute top-0 bottom-0 bg-foreground/10 rounded-r-lg pointer-events-none"
+                  className="absolute top-0 bottom-0 bg-zinc-900/40 rounded-r-lg pointer-events-none"
                   style={{ left: `${(20 / 24) * 100}%`, right: 0 }}
                 />
               </div>
@@ -237,21 +237,21 @@ export function TimelineView({ cities, homeCity, baseTime, onTimeSelect }: Timel
       </div>
       
       {/* Legend */}
-      <div className="flex flex-wrap items-center gap-4 md:gap-6 mt-6 text-xs text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-4 md:gap-6 mt-6 text-xs text-zinc-500">
         <div className="flex items-center gap-2">
-          <Home className="h-3 w-3 text-primary" />
+          <Home className="h-3 w-3 text-amber-400" />
           <span>Your home city</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-chart-1/40 rounded" />
+          <div className="w-3 h-3 bg-amber-500/30 rounded" />
           <span>Work hours (9-5)</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-foreground/10 rounded" />
+          <div className="w-3 h-3 bg-zinc-900/40 rounded" />
           <span>Night time</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-1 h-3 bg-primary rounded" />
+          <div className="w-1 h-3 bg-amber-400 rounded" />
           <span>Selected time</span>
         </div>
       </div>

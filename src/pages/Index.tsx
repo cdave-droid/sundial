@@ -42,7 +42,7 @@ const Index = () => {
   const allCities = [homeCity, ...selectedCities.filter(c => c.id !== homeCity.id)];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-zinc-900">
       {/* Header */}
       <header className="border-b border-amber-500/20 bg-zinc-900/95 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
@@ -71,7 +71,7 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 bg-zinc-900/80">
         {/* Hero Section with Globe */}
         <section className="mb-12">
           <div className="flex flex-col lg:flex-row items-center gap-8">
@@ -88,14 +88,14 @@ const Index = () => {
             
             {/* Text content */}
             <div className="text-center lg:text-left flex-1">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 text-amber-400 mb-4">
                 <Clock className="h-4 w-4" />
                 <span className="text-sm font-medium">Schedule meetings across timezones</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
                 Find the Perfect Meeting Time
               </h2>
-              <p className="text-muted-foreground max-w-2xl">
+              <p className="text-zinc-400 max-w-2xl">
                 Select a date and time, then see it reflected across all your chosen cities. 
                 Perfect for coordinating with global teams.
               </p>
@@ -104,8 +104,8 @@ const Index = () => {
         </section>
 
         {/* Time Input Section */}
-        <section className="bg-card rounded-2xl p-6 shadow-sm border border-border/50 mb-8">
-          <h3 className="text-lg font-semibold text-foreground mb-4">
+        <section className="bg-zinc-800/60 rounded-2xl p-6 shadow-sm border border-amber-500/20 mb-8">
+          <h3 className="text-lg font-semibold text-white mb-4">
             Set Your Meeting Time
           </h3>
           <TimeInput value={baseTime} onChange={setBaseTime} />
@@ -114,7 +114,7 @@ const Index = () => {
         {/* Cities Grid */}
         <section className="mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-foreground">
+            <h3 className="text-lg font-semibold text-white">
               Your Cities ({allCities.length})
             </h3>
             <CitySelector 
@@ -155,9 +155,9 @@ const Index = () => {
         </section>
 
         {/* Tips Section */}
-        <section className="bg-accent/30 rounded-2xl p-6 border border-border/50">
-          <h3 className="font-semibold text-foreground mb-3">💡 Tips</h3>
-          <ul className="space-y-2 text-sm text-muted-foreground">
+        <section className="bg-zinc-800/60 rounded-2xl p-6 border border-amber-500/20">
+          <h3 className="font-semibold text-amber-400 mb-3">💡 Tips</h3>
+          <ul className="space-y-2 text-sm text-zinc-400">
             <li>• Click anywhere on the timeline to quickly select a meeting time</li>
             <li>• Your home city is always shown at the top of the timeline</li>
             <li>• Green overlap bar shows when everyone is available during work hours</li>

@@ -52,21 +52,21 @@ export function TimeInput({ value, onChange }: TimeInputProps) {
   return (
     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Date</Label>
+        <Label className="text-sm font-medium text-zinc-400">Date</Label>
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
               className={cn(
-                "w-[200px] justify-start text-left font-normal",
-                !value && "text-muted-foreground"
+                "w-[200px] justify-start text-left font-normal bg-zinc-700/50 border-zinc-600 text-white hover:bg-zinc-700 hover:text-white",
+                !value && "text-zinc-500"
               )}
             >
-              <Calendar className="mr-2 h-4 w-4" />
+              <Calendar className="mr-2 h-4 w-4 text-amber-400" />
               {format(value, "PPP")}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
+          <PopoverContent className="w-auto p-0 bg-zinc-800 border-amber-500/20" align="start">
             <CalendarComponent
               mode="single"
               selected={value}
@@ -79,20 +79,20 @@ export function TimeInput({ value, onChange }: TimeInputProps) {
       </div>
       
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Time</Label>
+        <Label className="text-sm font-medium text-zinc-400">Time</Label>
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
               className={cn(
-                "w-[140px] justify-start text-left font-normal"
+                "w-[140px] justify-start text-left font-normal bg-zinc-700/50 border-zinc-600 text-white hover:bg-zinc-700 hover:text-white"
               )}
             >
-              <Clock className="mr-2 h-4 w-4" />
+              <Clock className="mr-2 h-4 w-4 text-amber-400" />
               {hours}:{minutes}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-48 p-2" align="start">
+          <PopoverContent className="w-48 p-2 bg-zinc-800 border-amber-500/20" align="start">
             <div className="grid grid-cols-3 gap-1 max-h-[200px] overflow-y-auto">
               {Array.from({ length: 24 }, (_, h) => (
                 [0, 30].map(m => {
@@ -103,7 +103,10 @@ export function TimeInput({ value, onChange }: TimeInputProps) {
                       key={timeStr}
                       variant={isSelected ? "default" : "ghost"}
                       size="sm"
-                      className="text-xs font-mono"
+                      className={cn(
+                        "text-xs font-mono",
+                        isSelected ? "bg-amber-500 text-zinc-900 hover:bg-amber-400" : "text-zinc-300 hover:bg-zinc-700 hover:text-white"
+                      )}
                       onClick={() => {
                         setHours(h.toString().padStart(2, '0'));
                         setMinutes(m.toString().padStart(2, '0'));
@@ -120,7 +123,11 @@ export function TimeInput({ value, onChange }: TimeInputProps) {
         </Popover>
       </div>
       
-      <Button variant="secondary" onClick={setToNow} className="h-10">
+      <Button 
+        variant="secondary" 
+        onClick={setToNow} 
+        className="h-10 bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 hover:text-amber-300 border border-amber-500/30"
+      >
         Now
       </Button>
     </div>
