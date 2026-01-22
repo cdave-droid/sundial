@@ -75,14 +75,14 @@ const Index = () => {
       <main className="container mx-auto px-4 py-8 relative z-10">
         {/* Hero Section with Globe */}
         <section className="mb-12">
-          <div className="flex flex-col lg:flex-row items-center gap-8">
-            {/* Globe */}
+          <div className="flex flex-col items-center gap-8">
+            {/* Globe - centered at top */}
             <div className="flex-shrink-0">
               <EarthGlobe size={320} cities={allCities} homeCity={homeCity} className="mx-auto" />
             </div>
             
-            {/* Text content */}
-            <div className="text-center lg:text-left flex-1">
+            {/* Text content - centered below globe */}
+            <div className="text-center">
               <h2 
                 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-white via-amber-200 to-white bg-[length:200%_100%] bg-clip-text text-transparent animate-[shimmer_3s_ease-in-out_infinite]"
                 style={{
