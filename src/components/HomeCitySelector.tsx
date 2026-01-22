@@ -94,7 +94,7 @@ export function HomeCitySelector({
               50% { transform: translateY(-10px); }
             }
           `}</style>
-          <p className="text-xl md:text-2xl text-primary font-medium max-w-lg mx-auto h-8 animate-[float_3s_ease-in-out_infinite_0.5s]">
+          <p className="text-xl md:text-2xl text-primary font-medium max-w-lg mx-auto h-8">
             {displayedTagline}
             <span className="animate-pulse text-primary">|</span>
           </p>
