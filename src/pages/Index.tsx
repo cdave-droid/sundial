@@ -78,7 +78,8 @@ const Index = () => {
           <div className="flex flex-col items-center gap-8">
             {/* Globe - centered at top */}
             <div className="flex-shrink-0">
-              <EarthGlobe size={320} cities={allCities} homeCity={homeCity} className="mx-auto" />
+              <EarthGlobe size={320} cities={allCities} homeCity={homeCity} className="mx-auto block md:hidden" />
+              <EarthGlobe size={450} cities={allCities} homeCity={homeCity} className="mx-auto hidden md:block" />
             </div>
             
             {/* Text content - centered below globe */}
