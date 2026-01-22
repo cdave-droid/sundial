@@ -34,9 +34,14 @@ const Index = () => {
 
   // All cities including home
   const allCities = [homeCity, ...selectedCities.filter(c => c.id !== homeCity.id)];
-  return <div className="min-h-screen bg-zinc-900">
+  return <div className="min-h-screen bg-zinc-950 relative overflow-hidden">
+      {/* Background stars layer */}
+      <div className="fixed inset-0 z-0">
+        <EarthGlobe size={Math.max(window.innerWidth, window.innerHeight) * 2} showStars className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-40 pointer-events-none" />
+      </div>
+      
       {/* Header */}
-      <header className="border-b border-amber-500/20 bg-zinc-900/95 backdrop-blur-sm sticky top-0 z-10">
+      <header className="border-b border-amber-500/20 bg-zinc-900/80 backdrop-blur-md sticky top-0 z-20">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -60,7 +65,7 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 bg-zinc-900/80">
+      <main className="container mx-auto px-4 py-8 relative z-10">
         {/* Hero Section with Globe */}
         <section className="mb-12">
           <div className="flex flex-col lg:flex-row items-center gap-8">
@@ -87,7 +92,7 @@ const Index = () => {
         </section>
 
         {/* Time Input Section */}
-        <section className="bg-zinc-800/60 rounded-2xl p-6 shadow-sm border border-amber-500/20 mb-8">
+        <section className="bg-zinc-900/70 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-amber-500/20 mb-8">
           <h3 className="text-lg font-semibold text-white mb-4">
             Set Your Meeting Time
           </h3>
@@ -117,7 +122,7 @@ const Index = () => {
         </section>
 
         {/* Tips Section */}
-        <section className="bg-zinc-800/60 rounded-2xl p-6 border border-amber-500/20">
+        <section className="bg-zinc-900/70 backdrop-blur-sm rounded-2xl p-6 border border-amber-500/20">
           <h3 className="font-semibold text-amber-400 mb-3">💡 Tips</h3>
           <ul className="space-y-2 text-sm text-zinc-400">
             <li>• Click anywhere on the timeline to quickly select a meeting time based on each city</li>
@@ -129,7 +134,7 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-amber-500/20 bg-zinc-900/95 py-6 mt-12">
+      <footer className="border-t border-amber-500/20 bg-zinc-900/80 backdrop-blur-md py-6 mt-12 relative z-10">
         <div className="container mx-auto px-4 text-center">
           <p className="text-white text-lg mb-1" style={{
           fontFamily: "'Dancing Script', cursive"
