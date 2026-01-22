@@ -19,9 +19,10 @@ export function HomeCitySelector({
   const tagline = "Your world, perfectly synchronized";
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const filteredCities = search.length > 0 
-    ? popularCities.filter(city => city.name.toLowerCase().includes(search.toLowerCase()) || city.country.toLowerCase().includes(search.toLowerCase())).slice(0, 30) 
-    : popularCities.slice(0, 30);
+  const filteredCities = (search.length > 0 
+    ? popularCities.filter(city => city.name.toLowerCase().includes(search.toLowerCase()) || city.country.toLowerCase().includes(search.toLowerCase()))
+    : popularCities.slice(0, 30)
+  ).sort((a, b) => a.name.localeCompare(b.name));
   const handleSelect = (city: City) => {
     setSearch(city.name);
     setIsOpen(false);
