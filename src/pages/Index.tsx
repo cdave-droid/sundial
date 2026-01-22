@@ -6,6 +6,7 @@ import { TimeInput } from '@/components/TimeInput';
 import { TimelineView } from '@/components/TimelineView';
 import { HomeCitySelector } from '@/components/HomeCitySelector';
 import { EarthGlobe } from '@/components/EarthGlobe';
+import { Particles } from '@/components/ui/particles';
 import { Clock, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 const Index = () => {
@@ -35,10 +36,15 @@ const Index = () => {
   // All cities including home
   const allCities = [homeCity, ...selectedCities.filter(c => c.id !== homeCity.id)];
   return <div className="min-h-screen bg-zinc-950 relative overflow-hidden">
-      {/* Background stars layer */}
-      <div className="fixed inset-0 z-0">
-        <EarthGlobe size={Math.max(window.innerWidth, window.innerHeight) * 2} showStars className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-40 pointer-events-none" />
-      </div>
+      {/* Particle background layer */}
+      <Particles 
+        className="fixed inset-0 z-0 h-full w-full" 
+        quantity={150} 
+        color="#f59e0b" 
+        size={0.6}
+        staticity={30}
+        ease={80}
+      />
       
       {/* Header */}
       <header className="border-b border-amber-500/20 bg-zinc-900/80 backdrop-blur-md sticky top-0 z-20">
