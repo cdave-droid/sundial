@@ -48,7 +48,7 @@ export function TimezoneCard({ city, baseTime, onRemove, isHome = false }: Timez
             <h3 className="text-xl font-semibold timezone-card-text">{city.name}</h3>
             <p className="text-sm opacity-75 timezone-card-text">{city.country}</p>
           </div>
-          <div className="timezone-card-text">
+          <div className="timezone-card-text mt-6">
             {isDay ? (
               <Sun className="h-6 w-6 animate-pulse" />
             ) : (
