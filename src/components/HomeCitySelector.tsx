@@ -82,10 +82,9 @@ export function HomeCitySelector({
         {/* Logo and Title */}
         <div className="text-center mb-8">
           
-          <h1 
-            className="text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-3 text-center animate-[float_3s_ease-in-out_infinite]" 
-            style={{ fontFamily: "'Dancing Script', cursive" }}
-          >
+          <h1 className="text-6xl lg:text-8xl font-bold text-white mb-3 text-center animate-[float_3s_ease-in-out_infinite] md:text-9xl" style={{
+          fontFamily: "'Dancing Script', cursive"
+        }}>
             Sundial
           </h1>
           <style>{`
@@ -94,13 +93,8 @@ export function HomeCitySelector({
               50% { transform: translateY(-10px); }
             }
           `}</style>
-          <p className="text-xl md:text-2xl text-primary font-medium max-w-lg mx-auto h-8">
-            {displayedTagline}
-            <span className="animate-pulse text-primary">|</span>
-          </p>
-          <p className="text-lg text-muted-foreground max-w-md mx-auto mt-2">
-            Find the perfect meeting time across timezones
-          </p>
+          
+          
         </div>
         
         {/* Simple Entry Box */}
@@ -110,22 +104,12 @@ export function HomeCitySelector({
           </label>
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
-            <Input
-              ref={inputRef} 
-              type="text" 
-              placeholder="Search for a city..." 
-              value={search} 
-              onChange={e => {
-                setSearch(e.target.value);
-                setIsOpen(true);
-              }} 
-              onFocus={() => setIsOpen(true)} 
-              onKeyDown={handleKeyDown} 
-              className="pl-12 pr-4 h-14 text-lg bg-white text-foreground placeholder:text-muted-foreground border-none shadow-xl rounded-xl focus:ring-2 focus:ring-primary/50" 
-              style={{ fontFamily: "'Dancing Script', cursive" }}
-              autoFocus 
-              autoComplete="off" 
-            />
+            <Input ref={inputRef} type="text" placeholder="Search for a city..." value={search} onChange={e => {
+            setSearch(e.target.value);
+            setIsOpen(true);
+          }} onFocus={() => setIsOpen(true)} onKeyDown={handleKeyDown} className="pl-12 pr-4 h-14 text-lg bg-white text-foreground placeholder:text-muted-foreground border-none shadow-xl rounded-xl focus:ring-2 focus:ring-primary/50" style={{
+            fontFamily: "'Dancing Script', cursive"
+          }} autoFocus autoComplete="off" />
             
             {/* Dropdown */}
             {isOpen && filteredCities.length > 0 && <div ref={dropdownRef} className="absolute top-full left-0 right-0 mt-2 bg-card/95 backdrop-blur-md border border-border/50 rounded-xl shadow-2xl overflow-hidden z-50">
