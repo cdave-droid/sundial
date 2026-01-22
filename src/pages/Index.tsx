@@ -15,8 +15,11 @@ const Index = () => {
   const [baseTime, setBaseTime] = useState(new Date());
   const handleSetHomeCity = (city: City) => {
     setHomeCity(city);
-    // Add some default cities excluding the home city
-    const defaults = popularCities.filter(c => c.id !== city.id).slice(0, 3);
+    // Add famous default cities (NYC, London, LA) excluding the home city
+    const famousCityNames = ['New York', 'London', 'Los Angeles'];
+    const defaults = popularCities.filter(
+      c => famousCityNames.includes(c.name) && c.id !== city.id
+    );
     setSelectedCities(defaults);
   };
   const handleAddCity = (city: City) => {
