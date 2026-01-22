@@ -72,19 +72,35 @@ const Index = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
-        <section className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-4">
-            <Clock className="h-4 w-4" />
-            <span className="text-sm font-medium">Schedule meetings across timezones</span>
+        {/* Hero Section with Globe */}
+        <section className="mb-12">
+          <div className="flex flex-col lg:flex-row items-center gap-8">
+            {/* Globe */}
+            <div className="flex-shrink-0">
+              <EarthGlobe 
+                size={320} 
+                cities={allCities} 
+                homeCity={homeCity}
+                showStars
+                className="mx-auto"
+              />
+            </div>
+            
+            {/* Text content */}
+            <div className="text-center lg:text-left flex-1">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-4">
+                <Clock className="h-4 w-4" />
+                <span className="text-sm font-medium">Schedule meetings across timezones</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                Find the Perfect Meeting Time
+              </h2>
+              <p className="text-muted-foreground max-w-2xl">
+                Select a date and time, then see it reflected across all your chosen cities. 
+                Perfect for coordinating with global teams.
+              </p>
+            </div>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Find the Perfect Meeting Time
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Select a date and time, then see it reflected across all your chosen cities. 
-            Perfect for coordinating with global teams.
-          </p>
         </section>
 
         {/* Time Input Section */}
