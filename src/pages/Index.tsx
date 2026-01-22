@@ -80,7 +80,12 @@ const Index = () => {
             
             {/* Text content */}
             <div className="text-center lg:text-left flex-1">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              <h2 
+                className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-white via-amber-200 to-white bg-[length:200%_100%] bg-clip-text text-transparent animate-[shimmer_3s_ease-in-out_infinite]"
+                style={{
+                  backgroundSize: '200% 100%',
+                }}
+              >
                 Synchronize the Perfect Meeting Time
               </h2>
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 text-amber-400">
