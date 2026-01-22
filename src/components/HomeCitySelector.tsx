@@ -112,7 +112,7 @@ export function HomeCitySelector({
           }} onFocus={() => setIsOpen(true)} onKeyDown={handleKeyDown} className="pl-12 pr-4 h-14 text-lg bg-white text-foreground placeholder:text-muted-foreground border-none shadow-xl rounded-xl focus:ring-2 focus:ring-primary/50" autoFocus autoComplete="off" />
             
             {/* Dropdown */}
-            {isOpen && filteredCities.length > 0 && <div ref={dropdownRef} className="absolute top-full left-0 right-0 mt-2 bg-card/95 backdrop-blur-md border border-border/50 rounded-xl shadow-2xl overflow-hidden z-50">
+            {isOpen && filteredCities.length > 0 && <div ref={dropdownRef} className="absolute top-full left-0 right-0 mt-2 bg-white border-none rounded-xl shadow-xl overflow-hidden z-50">
                 {filteredCities.map((city, index) => <button key={city.id} onClick={() => handleSelect(city)} className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${index === highlightedIndex ? 'bg-primary/20 text-foreground' : 'hover:bg-primary/10 text-foreground'}`}>
                     <MapPin className="h-4 w-4 text-primary flex-shrink-0" />
                     <div>
