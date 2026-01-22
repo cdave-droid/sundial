@@ -92,7 +92,7 @@ const Index = () => {
           <div className="flex flex-col lg:flex-row items-center gap-8">
             {/* Globe */}
             <div className="flex-shrink-0">
-              <EarthGlobe size={320} cities={allCities} homeCity={homeCity} showStars className="mx-auto" />
+              <EarthGlobe size={320} cities={allCities} homeCity={homeCity} className="mx-auto" />
             </div>
             
             {/* Text content */}
