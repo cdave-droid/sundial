@@ -31,47 +31,145 @@ export function TimelineView({ cities, baseTime }: TimelineViewProps) {
     return { workStart, workEnd };
   };
 
-  // Find overlapping work hours
+  // Calculate work hours in timeline coordinates for a city
+  const getWorkHoursInTimeline = (city: City) => {
+    const localTime = getTimeInTimezone(baseTime, city.timezone);
+    const localHour = localTime.getHours() + localTime.getMinutes() / 60;
+    const baseHour = baseTime.getHours() + baseTime.getMinutes() / 60;
+    const offset = localHour - baseHour;
+    
+    // Work start/end in timeline hours (0-24)
+    let workStart = WORK_START - offset;
+    let workEnd = WORK_END - offset;
+    
+    // Normalize to 0-24 range
+    while (workStart < 0) workStart += 24;
+    while (workEnd < 0) workEnd += 24;
+    workStart = workStart % 24;
+    workEnd = workEnd % 24;
+    
+    return { workStart, workEnd, wrapsAround: workEnd < workStart };
+  };
+
+  // Find overlapping work hours across all cities
   const findOverlap = () => {
     if (cities.length < 2) return null;
     
-    const workRanges = cities.map(city => {
-      const localTime = getTimeInTimezone(baseTime, city.timezone);
-      const hour = localTime.getHours();
-      const minute = localTime.getMinutes();
-      const currentLocalHour = hour + minute / 60;
-      
-      // Calculate the offset from base time
-      const baseHour = baseTime.getHours() + baseTime.getMinutes() / 60;
-      const offset = currentLocalHour - baseHour;
-      
-      // Work hours in terms of the timeline (base time perspective)
-      const start = WORK_START - offset;
-      const end = WORK_END - offset;
-      
-      return { start: (start + 24) % 24, end: (end + 24) % 24, city };
-    });
-
-    // Find the intersection of all work hour ranges
-    let overlapStart = Math.max(...workRanges.map(r => r.start > r.end ? r.start - 24 : r.start));
-    let overlapEnd = Math.min(...workRanges.map(r => r.end));
+    // Get all work ranges in timeline coordinates
+    const ranges = cities.map(city => getWorkHoursInTimeline(city));
     
-    if (overlapStart < overlapEnd) {
-      return { start: (overlapStart + 24) % 24, end: overlapEnd };
+    // Convert to a common format: array of [start, end] where we handle wrap-around
+    // We'll check each hour slot to see if ALL cities are working
+    const workingHours: number[] = [];
+    
+    for (let hour = 0; hour < 24; hour += 0.5) {
+      const allWorking = ranges.every(range => {
+        if (range.wrapsAround) {
+          // Working from workStart to 24 and from 0 to workEnd
+          return hour >= range.workStart || hour < range.workEnd;
+        } else {
+          return hour >= range.workStart && hour < range.workEnd;
+        }
+      });
+      
+      if (allWorking) {
+        workingHours.push(hour);
+      }
     }
-    return null;
+    
+    if (workingHours.length === 0) return null;
+    
+    // Find contiguous ranges
+    const segments: { start: number; end: number }[] = [];
+    let segmentStart = workingHours[0];
+    let prevHour = workingHours[0];
+    
+    for (let i = 1; i < workingHours.length; i++) {
+      if (workingHours[i] - prevHour > 0.5) {
+        segments.push({ start: segmentStart, end: prevHour + 0.5 });
+        segmentStart = workingHours[i];
+      }
+      prevHour = workingHours[i];
+    }
+    segments.push({ start: segmentStart, end: prevHour + 0.5 });
+    
+    return segments;
   };
 
-  const overlap = findOverlap();
+  const overlapSegments = findOverlap();
+  const totalOverlapHours = overlapSegments 
+    ? overlapSegments.reduce((sum, seg) => sum + (seg.end - seg.start), 0)
+    : 0;
 
   return (
     <Card className="p-6 bg-card border-border/50">
-      <h3 className="text-lg font-semibold text-foreground mb-4">
-        24-Hour Timeline
-      </h3>
-      <p className="text-sm text-muted-foreground mb-6">
-        Green bars show typical work hours (9 AM - 5 PM) in each city
-      </p>
+      <div className="flex items-start justify-between mb-4">
+        <div>
+          <h3 className="text-lg font-semibold text-foreground">
+            24-Hour Timeline
+          </h3>
+          <p className="text-sm text-muted-foreground mt-1">
+            Find the best meeting time across all cities
+          </p>
+        </div>
+        {cities.length >= 2 && (
+          <div className={`px-3 py-2 rounded-lg text-sm font-medium ${
+            totalOverlapHours > 0 
+              ? 'bg-chart-3/20 text-chart-4' 
+              : 'bg-destructive/10 text-destructive'
+          }`}>
+            {totalOverlapHours > 0 
+              ? `${totalOverlapHours}h overlap`
+              : 'No overlap'
+            }
+          </div>
+        )}
+      </div>
+      
+      {/* Overlap indicator row */}
+      {cities.length >= 2 && (
+        <div className="mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-24 flex-shrink-0">
+              <div className="font-medium text-sm text-chart-4">
+                ✓ Overlap
+              </div>
+              <div className="text-xs text-muted-foreground">
+                Best times
+              </div>
+            </div>
+            <div className="flex-1 h-10 bg-muted/30 rounded-lg relative overflow-hidden border-2 border-chart-3/30">
+              {/* Hour grid lines */}
+              {HOURS.filter((_, i) => i % 6 === 0).map((hour) => (
+                <div
+                  key={hour}
+                  className="absolute top-0 bottom-0 w-px bg-border/50"
+                  style={{ left: `${(hour / 24) * 100}%` }}
+                />
+              ))}
+              
+              {/* Overlap segments */}
+              {overlapSegments && overlapSegments.map((segment, idx) => (
+                <div
+                  key={idx}
+                  className="absolute top-1 bottom-1 bg-chart-3/60 rounded animate-pulse"
+                  style={{
+                    left: `${(segment.start / 24) * 100}%`,
+                    width: `${((segment.end - segment.start) / 24) * 100}%`,
+                  }}
+                />
+              ))}
+              
+              {/* No overlap message */}
+              {(!overlapSegments || overlapSegments.length === 0) && (
+                <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground">
+                  No common work hours found
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Hour labels */}
       <div className="flex mb-2 text-xs text-muted-foreground">
@@ -189,7 +287,13 @@ export function TimelineView({ cities, baseTime }: TimelineViewProps) {
       </div>
       
       {/* Legend */}
-      <div className="flex items-center gap-6 mt-6 text-xs text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-4 md:gap-6 mt-6 text-xs text-muted-foreground">
+        {cities.length >= 2 && (
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-chart-3/60 rounded" />
+            <span>Overlap hours</span>
+          </div>
+        )}
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-chart-1/40 rounded" />
           <span>Work hours (9-5)</span>
