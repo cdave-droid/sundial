@@ -113,73 +113,8 @@ export function TimelineView({ cities, homeCity, baseTime, onTimeSelect }: Timel
             Click anywhere on the timeline to select a meeting time
           </p>
         </div>
-        {orderedCities.length >= 2 && (
-          <div className={`px-3 py-2 rounded-lg text-sm font-medium ${
-            totalOverlapHours > 0 
-              ? 'bg-chart-3/20 text-chart-4' 
-              : 'bg-destructive/10 text-destructive'
-          }`}>
-            {totalOverlapHours > 0 
-              ? `${totalOverlapHours}h overlap`
-              : 'No overlap'
-            }
-          </div>
-        )}
       </div>
       
-      {/* Overlap indicator row */}
-      {orderedCities.length >= 2 && (
-        <div className="mb-6">
-          <div className="flex items-center gap-4">
-            <div className="w-28 flex-shrink-0">
-              <div className="font-medium text-sm text-chart-4">
-                ✓ Overlap
-              </div>
-              <div className="text-xs text-muted-foreground">
-                Best times
-              </div>
-            </div>
-            <div 
-              className="flex-1 h-10 bg-muted/30 rounded-lg relative overflow-hidden border-2 border-chart-3/30 cursor-pointer hover:border-chart-3/50 transition-colors"
-              onClick={handleTimelineClick}
-            >
-              {HOURS.filter((_, i) => i % 6 === 0).map((hour) => (
-                <div
-                  key={hour}
-                  className="absolute top-0 bottom-0 w-px bg-border/50"
-                  style={{ left: `${(hour / 24) * 100}%` }}
-                />
-              ))}
-              
-              {overlapSegments && overlapSegments.map((segment, idx) => (
-                <div
-                  key={idx}
-                  className="absolute top-1 bottom-1 bg-chart-3/60 rounded"
-                  style={{
-                    left: `${(segment.start / 24) * 100}%`,
-                    width: `${((segment.end - segment.start) / 24) * 100}%`,
-                  }}
-                />
-              ))}
-              
-              {/* Selection indicator */}
-              <div
-                className="absolute top-0 bottom-0 w-1 bg-primary z-20 transition-all duration-150"
-                style={{ left: `${selectedPosition}%`, transform: 'translateX(-50%)' }}
-              >
-                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-primary rounded-full shadow-md" />
-                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-primary rounded-full shadow-md" />
-              </div>
-              
-              {(!overlapSegments || overlapSegments.length === 0) && (
-                <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground pointer-events-none">
-                  No common work hours found
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
       
       {/* Hour labels */}
       <div className="flex mb-2 ml-28 text-xs text-muted-foreground">
@@ -303,12 +238,6 @@ export function TimelineView({ cities, homeCity, baseTime, onTimeSelect }: Timel
           <Home className="h-3 w-3 text-primary" />
           <span>Your home city</span>
         </div>
-        {orderedCities.length >= 2 && (
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-chart-3/60 rounded" />
-            <span>Overlap hours</span>
-          </div>
-        )}
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-chart-1/40 rounded" />
           <span>Work hours (9-5)</span>
