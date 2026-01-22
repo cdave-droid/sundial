@@ -109,11 +109,23 @@ export function HomeCitySelector({
             Enter your home city to get started
           </label>
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input ref={inputRef} type="text" placeholder="Search for a city..." value={search} onChange={e => {
-            setSearch(e.target.value);
-            setIsOpen(true);
-          }} onFocus={() => setIsOpen(true)} onKeyDown={handleKeyDown} className="pl-12 pr-4 h-14 text-lg bg-card/90 backdrop-blur-md border-primary/30 shadow-xl rounded-xl focus:ring-2 focus:ring-primary/50" autoFocus autoComplete="off" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
+            <Input
+              ref={inputRef} 
+              type="text" 
+              placeholder="Search for a city..." 
+              value={search} 
+              onChange={e => {
+                setSearch(e.target.value);
+                setIsOpen(true);
+              }} 
+              onFocus={() => setIsOpen(true)} 
+              onKeyDown={handleKeyDown} 
+              className="pl-12 pr-4 h-14 text-lg bg-white text-foreground placeholder:text-muted-foreground border-none shadow-xl rounded-xl focus:ring-2 focus:ring-primary/50" 
+              style={{ fontFamily: "'Dancing Script', cursive" }}
+              autoFocus 
+              autoComplete="off" 
+            />
             
             {/* Dropdown */}
             {isOpen && filteredCities.length > 0 && <div ref={dropdownRef} className="absolute top-full left-0 right-0 mt-2 bg-card/95 backdrop-blur-md border border-border/50 rounded-xl shadow-2xl overflow-hidden z-50">
