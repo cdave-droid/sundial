@@ -51,7 +51,7 @@ export function TimeInput({ value, onChange }: TimeInputProps) {
 
   return (
     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
-      <div className="space-y-2">
+      <div className="space-y-3">
         <Label className="text-sm font-medium text-zinc-400">Date</Label>
         <Popover>
           <PopoverTrigger asChild>
@@ -78,7 +78,7 @@ export function TimeInput({ value, onChange }: TimeInputProps) {
         </Popover>
       </div>
       
-      <div className="space-y-2">
+      <div className="space-y-3">
         <Label className="text-sm font-medium text-zinc-400">Time</Label>
         <Popover>
           <PopoverTrigger asChild>
