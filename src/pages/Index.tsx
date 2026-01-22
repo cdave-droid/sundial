@@ -4,34 +4,69 @@ import { TimezoneCard } from '@/components/TimezoneCard';
 import { CitySelector } from '@/components/CitySelector';
 import { TimeInput } from '@/components/TimeInput';
 import { TimelineView } from '@/components/TimelineView';
-import { Globe, Clock } from 'lucide-react';
-
-const defaultCities = popularCities.slice(0, 4);
+import { HomeCitySelector } from '@/components/HomeCitySelector';
+import { Globe, Clock, Home } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
-  const [selectedCities, setSelectedCities] = useState<City[]>(defaultCities);
+  const [homeCity, setHomeCity] = useState<City | null>(null);
+  const [selectedCities, setSelectedCities] = useState<City[]>([]);
   const [baseTime, setBaseTime] = useState(new Date());
 
+  const handleSetHomeCity = (city: City) => {
+    setHomeCity(city);
+    // Add some default cities excluding the home city
+    const defaults = popularCities
+      .filter(c => c.id !== city.id)
+      .slice(0, 3);
+    setSelectedCities(defaults);
+  };
+
   const handleAddCity = (city: City) => {
-    setSelectedCities([...selectedCities, city]);
+    if (city.id !== homeCity?.id) {
+      setSelectedCities([...selectedCities, city]);
+    }
   };
 
   const handleRemoveCity = (id: string) => {
     setSelectedCities(selectedCities.filter((city) => city.id !== id));
   };
 
+  // Show home city selector if not set
+  if (!homeCity) {
+    return <HomeCitySelector onSelect={handleSetHomeCity} />;
+  }
+
+  // All cities including home
+  const allCities = [homeCity, ...selectedCities.filter(c => c.id !== homeCity.id)];
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <Globe className="h-6 w-6 text-primary" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Globe className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-foreground">TimeSync</h1>
+                <p className="text-sm text-muted-foreground">Compare timezones instantly</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-foreground">TimeSync</h1>
-              <p className="text-sm text-muted-foreground">Compare timezones instantly</p>
+            <div className="flex items-center gap-2 text-sm">
+              <Home className="h-4 w-4 text-primary" />
+              <span className="text-muted-foreground">Home:</span>
+              <span className="font-medium text-foreground">{homeCity.name}</span>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-xs text-muted-foreground hover:text-foreground"
+                onClick={() => setHomeCity(null)}
+              >
+                Change
+              </Button>
             </div>
           </div>
         </div>
@@ -61,52 +96,57 @@ const Index = () => {
           <TimeInput value={baseTime} onChange={setBaseTime} />
         </section>
 
+        {/* Timeline View */}
+        <section className="mb-8">
+          <TimelineView 
+            cities={selectedCities} 
+            homeCity={homeCity}
+            baseTime={baseTime} 
+            onTimeSelect={setBaseTime}
+          />
+        </section>
+
         {/* Cities Grid */}
         <section className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-foreground">
-              Your Cities ({selectedCities.length})
+              Your Cities ({allCities.length})
             </h3>
-            <CitySelector selectedCities={selectedCities} onAddCity={handleAddCity} />
+            <CitySelector 
+              selectedCities={allCities} 
+              onAddCity={handleAddCity} 
+            />
           </div>
           
-          {selectedCities.length === 0 ? (
-            <div className="text-center py-16 bg-card rounded-2xl border border-dashed border-border">
-              <Globe className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
-              <p className="text-muted-foreground">No cities selected</p>
-              <p className="text-sm text-muted-foreground/75">
-                Add cities to start comparing timezones
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {selectedCities.map((city) => (
-                <TimezoneCard
-                  key={city.id}
-                  city={city}
-                  baseTime={baseTime}
-                  onRemove={handleRemoveCity}
-                />
-              ))}
-            </div>
-          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {/* Home city card - always first */}
+            <TimezoneCard
+              key={homeCity.id}
+              city={homeCity}
+              baseTime={baseTime}
+              onRemove={() => {}}
+              isHome
+            />
+            {/* Other cities */}
+            {selectedCities.filter(c => c.id !== homeCity.id).map((city) => (
+              <TimezoneCard
+                key={city.id}
+                city={city}
+                baseTime={baseTime}
+                onRemove={handleRemoveCity}
+              />
+            ))}
+          </div>
         </section>
-
-        {/* Timeline View */}
-        {selectedCities.length > 0 && (
-          <section className="mb-8">
-            <TimelineView cities={selectedCities} baseTime={baseTime} />
-          </section>
-        )}
 
         {/* Tips Section */}
         <section className="bg-accent/30 rounded-2xl p-6 border border-border/50">
           <h3 className="font-semibold text-foreground mb-3">💡 Tips</h3>
           <ul className="space-y-2 text-sm text-muted-foreground">
+            <li>• Click anywhere on the timeline to quickly select a meeting time</li>
+            <li>• Your home city is always shown at the top of the timeline</li>
+            <li>• Green overlap bar shows when everyone is available during work hours</li>
             <li>• Cards show day/night status with sun and moon icons</li>
-            <li>• The progress bar shows how far through the day each city is</li>
-            <li>• Click "Now" to quickly set the current time</li>
-            <li>• Add up to {popularCities.length} different cities to compare</li>
           </ul>
         </section>
       </main>

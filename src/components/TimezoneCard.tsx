@@ -1,5 +1,5 @@
 import { City, getTimeInTimezone, formatTime, formatDate, isDaytime } from '@/lib/timezones';
-import { X, Sun, Moon } from 'lucide-react';
+import { X, Sun, Moon, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
@@ -7,9 +7,10 @@ interface TimezoneCardProps {
   city: City;
   baseTime: Date;
   onRemove: (id: string) => void;
+  isHome?: boolean;
 }
 
-export function TimezoneCard({ city, baseTime, onRemove }: TimezoneCardProps) {
+export function TimezoneCard({ city, baseTime, onRemove, isHome = false }: TimezoneCardProps) {
   const localTime = getTimeInTimezone(baseTime, city.timezone);
   const isDay = isDaytime(localTime);
   const hour = localTime.getHours();
@@ -23,17 +24,24 @@ export function TimezoneCard({ city, baseTime, onRemove }: TimezoneCardProps) {
   };
 
   return (
-    <Card className={`relative overflow-hidden transition-all duration-500 hover:shadow-lg hover:-translate-y-1 ${getBackgroundClass()}`}>
+    <Card className={`relative overflow-hidden transition-all duration-500 hover:shadow-lg hover:-translate-y-1 ${getBackgroundClass()} ${isHome ? 'ring-2 ring-primary' : ''}`}>
       <div className="absolute inset-0 bg-gradient-to-br opacity-90" />
       <div className="relative p-6">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute top-2 right-2 h-8 w-8 opacity-60 hover:opacity-100 timezone-card-button"
-          onClick={() => onRemove(city.id)}
-        >
-          <X className="h-4 w-4" />
-        </Button>
+        {isHome ? (
+          <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full bg-primary-foreground/20 text-xs font-medium timezone-card-text">
+            <Home className="h-3 w-3" />
+            Home
+          </div>
+        ) : (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-2 right-2 h-8 w-8 opacity-60 hover:opacity-100 timezone-card-button"
+            onClick={() => onRemove(city.id)}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
         
         <div className="flex items-start justify-between">
           <div>
