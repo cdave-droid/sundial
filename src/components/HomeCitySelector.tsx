@@ -14,6 +14,8 @@ export function HomeCitySelector({
   const [search, setSearch] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const [displayedTagline, setDisplayedTagline] = useState('');
+  const tagline = "Your world, perfectly synchronized";
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const filteredCities = search.length > 0 ? popularCities.filter(city => city.name.toLowerCase().includes(search.toLowerCase()) || city.country.toLowerCase().includes(search.toLowerCase())).slice(0, 6) : [];
@@ -42,6 +44,20 @@ export function HomeCitySelector({
   useEffect(() => {
     setHighlightedIndex(0);
   }, [search]);
+
+  // Typewriter effect for tagline
+  useEffect(() => {
+    let currentIndex = 0;
+    const typeInterval = setInterval(() => {
+      if (currentIndex <= tagline.length) {
+        setDisplayedTagline(tagline.slice(0, currentIndex));
+        currentIndex++;
+      } else {
+        clearInterval(typeInterval);
+      }
+    }, 80);
+    return () => clearInterval(typeInterval);
+  }, []);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) && !inputRef.current?.contains(event.target as Node)) {
@@ -75,7 +91,11 @@ export function HomeCitySelector({
               SUNDIAL
             </span>
           </h1>
-          <p className="text-lg text-muted-foreground max-w-md mx-auto">
+          <p className="text-xl md:text-2xl text-primary font-medium max-w-lg mx-auto h-8">
+            {displayedTagline}
+            <span className="animate-pulse text-primary">|</span>
+          </p>
+          <p className="text-lg text-muted-foreground max-w-md mx-auto mt-2">
             Find the perfect meeting time across timezones
           </p>
         </div>
