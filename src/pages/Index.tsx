@@ -36,7 +36,7 @@ const Index = () => {
   // All cities including home
   const allCities = [homeCity, ...selectedCities.filter(c => c.id !== homeCity.id)];
   return <div className="min-h-screen bg-zinc-950 relative overflow-hidden">
-      {/* Particle background layer */}
+      {/* Particle background layers */}
       <Particles 
         className="fixed inset-0 z-0 h-full w-full" 
         quantity={150} 
@@ -44,6 +44,14 @@ const Index = () => {
         size={0.6}
         staticity={30}
         ease={80}
+      />
+      <Particles 
+        className="fixed inset-0 z-0 h-full w-full" 
+        quantity={50} 
+        color="#ffffff" 
+        size={0.4}
+        staticity={60}
+        ease={100}
       />
       
       {/* Header */}
