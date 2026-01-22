@@ -3,6 +3,7 @@ import { City, popularCities } from '@/lib/timezones';
 import { TimezoneCard } from '@/components/TimezoneCard';
 import { CitySelector } from '@/components/CitySelector';
 import { TimeInput } from '@/components/TimeInput';
+import { TimelineView } from '@/components/TimelineView';
 import { Globe, Clock } from 'lucide-react';
 
 const defaultCities = popularCities.slice(0, 4);
@@ -90,6 +91,13 @@ const Index = () => {
             </div>
           )}
         </section>
+
+        {/* Timeline View */}
+        {selectedCities.length > 0 && (
+          <section className="mb-8">
+            <TimelineView cities={selectedCities} baseTime={baseTime} />
+          </section>
+        )}
 
         {/* Tips Section */}
         <section className="bg-accent/30 rounded-2xl p-6 border border-border/50">
