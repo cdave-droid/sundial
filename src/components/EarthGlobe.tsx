@@ -225,12 +225,20 @@ export function EarthGlobe({
   return (
     <div 
       className={className}
-      style={{ width: size, height: size }}
+      style={{ 
+        width: size, 
+        height: size,
+        overflow: 'visible',
+        position: 'relative',
+      }}
     >
       <Canvas
         camera={{ position: [0, 0, isHero ? 2.8 : 2.5], fov: 45 }}
         gl={{ antialias: true, alpha: true }}
-        style={{ background: 'transparent' }}
+        style={{ 
+          background: 'transparent',
+          overflow: 'visible',
+        }}
       >
         <ambientLight intensity={0.6} />
         <directionalLight position={[5, 3, 5]} intensity={1.2} />
