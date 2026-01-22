@@ -24,7 +24,7 @@ export function TimezoneCard({ city, baseTime, onRemove, isHome = false }: Timez
   };
 
   return (
-    <Card className={`relative overflow-hidden transition-all duration-500 hover:shadow-lg hover:-translate-y-1 ${getBackgroundClass()} ${isHome ? 'ring-2 ring-primary' : ''}`}>
+    <Card className={`relative overflow-hidden transition-all duration-300 ease-out hover:scale-[1.02] hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] ${getBackgroundClass()} ${isHome ? 'ring-2 ring-primary' : ''}`}>
       <div className="absolute inset-0 bg-gradient-to-br opacity-90" />
       <div className="relative p-6">
         {isHome ? (
