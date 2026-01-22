@@ -1,165 +1,5 @@
-import { useRef, useMemo } from 'react';
-import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { Sphere, OrbitControls, Html } from '@react-three/drei';
-import * as THREE from 'three';
+import React, { useMemo } from 'react';
 import { City } from '@/lib/timezones';
-import earthTexture from '@/assets/earth-texture.jpg';
-
-// Convert lat/lng to 3D position on sphere
-function latLngToVector3(lat: number, lng: number, radius: number): THREE.Vector3 {
-  const phi = (90 - lat) * (Math.PI / 180);
-  const theta = (lng + 180) * (Math.PI / 180);
-  
-  const x = -radius * Math.sin(phi) * Math.cos(theta);
-  const y = radius * Math.cos(phi);
-  const z = radius * Math.sin(phi) * Math.sin(theta);
-  
-  return new THREE.Vector3(x, y, z);
-}
-
-interface CityPinProps {
-  city: City;
-  isHome?: boolean;
-  radius: number;
-}
-
-function CityPin({ city, isHome, radius }: CityPinProps) {
-  const position = useMemo(() => 
-    latLngToVector3(city.lat, city.lng, radius + 0.02),
-    [city.lat, city.lng, radius]
-  );
-
-  // Create a pin that points outward from the globe center
-  const pinHeight = 0.08;
-  const pinDirection = position.clone().normalize();
-  const pinTipPosition = position.clone().add(pinDirection.clone().multiplyScalar(pinHeight));
-
-  return (
-    <group>
-      {/* Pin base on globe surface */}
-      <mesh position={position}>
-        <sphereGeometry args={[0.025, 16, 16]} />
-        <meshStandardMaterial 
-          color={isHome ? "#f59e0b" : "#ef4444"} 
-          emissive={isHome ? "#f59e0b" : "#ef4444"}
-          emissiveIntensity={0.6}
-        />
-      </mesh>
-      
-      {/* Pin stem */}
-      <mesh position={position.clone().add(pinDirection.clone().multiplyScalar(pinHeight / 2))}>
-        <cylinderGeometry args={[0.008, 0.008, pinHeight, 8]} />
-        <meshStandardMaterial 
-          color={isHome ? "#f59e0b" : "#ef4444"}
-        />
-      </mesh>
-      
-      {/* City label */}
-      <Html
-        position={pinTipPosition.toArray()}
-        center
-        style={{
-          pointerEvents: 'none',
-          userSelect: 'none',
-        }}
-      >
-        <div className={`px-2 py-1 rounded-md text-xs font-medium whitespace-nowrap shadow-lg ${
-          isHome 
-            ? 'bg-primary text-primary-foreground' 
-            : 'bg-card text-foreground border border-border'
-        }`}>
-          {city.name}
-        </div>
-      </Html>
-    </group>
-  );
-}
-
-interface EarthProps {
-  cities?: City[];
-  homeCity?: City | null;
-  autoRotate?: boolean;
-}
-
-function Earth({ cities = [], homeCity, autoRotate = true }: EarthProps) {
-  const earthRef = useRef<THREE.Group>(null);
-  const radius = 1;
-  
-  // Load Earth texture
-  const texture = useLoader(THREE.TextureLoader, earthTexture);
-  texture.colorSpace = THREE.SRGBColorSpace;
-
-  useFrame((_, delta) => {
-    if (earthRef.current && autoRotate) {
-      earthRef.current.rotation.y += delta * 0.1;
-    }
-  });
-
-  return (
-    <group ref={earthRef}>
-      {/* Earth with texture */}
-      <Sphere args={[radius, 64, 64]}>
-        <meshStandardMaterial
-          map={texture}
-          roughness={0.8}
-          metalness={0.1}
-        />
-      </Sphere>
-
-      {/* City pins */}
-      {homeCity && (
-        <CityPin city={homeCity} isHome radius={radius} />
-      )}
-      {cities.filter(c => c.id !== homeCity?.id).map((city) => (
-        <CityPin key={city.id} city={city} radius={radius} />
-      ))}
-    </group>
-  );
-}
-
-function Atmosphere() {
-  return (
-    <Sphere args={[1.08, 32, 32]}>
-      <meshBasicMaterial
-        color="#88ccff"
-        transparent
-        opacity={0.15}
-        side={THREE.BackSide}
-      />
-    </Sphere>
-  );
-}
-
-function Stars() {
-  const starsRef = useRef<THREE.Points>(null);
-  
-  const starPositions = useMemo(() => {
-    const positions = new Float32Array(1000 * 3);
-    for (let i = 0; i < 1000; i++) {
-      const radius = 50 + Math.random() * 50;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.random() * Math.PI;
-      positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-      positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-      positions[i * 3 + 2] = radius * Math.cos(phi);
-    }
-    return positions;
-  }, []);
-
-  return (
-    <points ref={starsRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={1000}
-          array={starPositions}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial size={0.5} color="#ffffff" transparent opacity={0.8} />
-    </points>
-  );
-}
 
 interface EarthGlobeProps {
   size?: number;
@@ -169,6 +9,80 @@ interface EarthGlobeProps {
   showStars?: boolean;
 }
 
+// Convert lat/lng to x/y position on a 2D circle projection
+function latLngToPosition(lat: number, lng: number, size: number): { x: number; y: number; visible: boolean } {
+  // Normalize longitude to -180 to 180
+  const normalizedLng = ((lng + 180) % 360) - 180;
+  
+  // Only show cities on the "front" hemisphere (-90 to 90 degrees longitude)
+  const visible = normalizedLng >= -90 && normalizedLng <= 90;
+  
+  // Calculate position on the visible hemisphere
+  const radius = size / 2 - 8;
+  const x = (normalizedLng / 90) * radius;
+  const y = -(lat / 90) * radius;
+  
+  // Apply perspective - pins closer to edge appear more compressed
+  const edgeFactor = Math.cos((normalizedLng / 90) * (Math.PI / 2));
+  
+  return {
+    x: x * edgeFactor + size / 2,
+    y: y + size / 2,
+    visible: visible && edgeFactor > 0.3
+  };
+}
+
+interface CityPinProps {
+  city: City;
+  isHome?: boolean;
+  size: number;
+}
+
+function CityPin({ city, isHome, size }: CityPinProps) {
+  const position = useMemo(() => latLngToPosition(city.lat, city.lng, size), [city.lat, city.lng, size]);
+  
+  if (!position.visible) return null;
+  
+  return (
+    <div
+      className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
+      style={{
+        left: position.x,
+        top: position.y,
+      }}
+    >
+      {/* Pin marker */}
+      <div className={`relative flex flex-col items-center`}>
+        {/* Pin dot */}
+        <div 
+          className={`w-2 h-2 rounded-full shadow-lg ${
+            isHome 
+              ? 'bg-amber-500 shadow-amber-500/50' 
+              : 'bg-red-500 shadow-red-500/50'
+          }`}
+          style={{
+            boxShadow: isHome 
+              ? '0 0 8px 2px rgba(245, 158, 11, 0.6)' 
+              : '0 0 6px 1px rgba(239, 68, 68, 0.5)'
+          }}
+        />
+        {/* Label */}
+        {size > 100 && (
+          <div 
+            className={`absolute top-3 px-1.5 py-0.5 rounded text-[10px] font-medium whitespace-nowrap ${
+              isHome 
+                ? 'bg-amber-500 text-zinc-900' 
+                : 'bg-zinc-800 text-white border border-zinc-700'
+            }`}
+          >
+            {city.name}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function EarthGlobe({ 
   size = 40, 
   className = '', 
@@ -176,33 +90,150 @@ export function EarthGlobe({
   homeCity,
   showStars = false 
 }: EarthGlobeProps) {
-  const isHero = size > 200;
+  const isLarge = size > 100;
 
   return (
-    <div 
-      className={className}
-      style={{ width: size, height: size }}
-    >
-      <Canvas
-        camera={{ position: [0, 0, isHero ? 2.8 : 2.5], fov: 45 }}
-        gl={{ antialias: true, alpha: true }}
-        style={{ background: 'transparent' }}
+    <div className={`relative ${className}`} style={{ width: size, height: size }}>
+      <style>
+        {`
+          @keyframes earthRotate {
+            0% { background-position: 0 0; }
+            100% { background-position: ${size}px 0; }
+          }
+          @keyframes twinkling {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+          }
+          @keyframes twinkling-slow {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.9; }
+          }
+          @keyframes twinkling-fast {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+          }
+          @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 ${size * 0.15}px ${size * 0.05}px rgba(245, 158, 11, 0.3); }
+            50% { box-shadow: 0 0 ${size * 0.2}px ${size * 0.08}px rgba(245, 158, 11, 0.5); }
+          }
+        `}
+      </style>
+
+      {/* Stars background */}
+      {showStars && (
+        <div className="absolute inset-0 overflow-hidden rounded-full">
+          {Array.from({ length: 50 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full bg-white"
+              style={{
+                width: Math.random() * 2 + 1,
+                height: Math.random() * 2 + 1,
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animation: `twinkling${i % 3 === 0 ? '-slow' : i % 3 === 1 ? '-fast' : ''} ${2 + Math.random() * 3}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 2}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Globe container */}
+      <div 
+        className="relative rounded-full overflow-hidden"
+        style={{ 
+          width: size, 
+          height: size,
+          animation: 'pulse-glow 4s ease-in-out infinite',
+        }}
       >
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[5, 3, 5]} intensity={1.2} />
-        <directionalLight position={[-5, -3, -5]} intensity={0.4} />
-        {showStars && <Stars />}
-        <Earth cities={cities} homeCity={homeCity} autoRotate={!isHero} />
-        <Atmosphere />
-        <OrbitControls 
-          enableZoom={false} 
-          enablePan={false}
-          autoRotate={isHero}
-          autoRotateSpeed={0.3}
-          minPolarAngle={Math.PI * 0.3}
-          maxPolarAngle={Math.PI * 0.7}
+        {/* Dark space background */}
+        <div 
+          className="absolute inset-0 rounded-full"
+          style={{
+            background: 'radial-gradient(circle at 30% 30%, #1a1a2e 0%, #0f0f1a 100%)',
+          }}
         />
-      </Canvas>
+
+        {/* Earth sphere */}
+        <div
+          className="absolute inset-1 rounded-full overflow-hidden"
+          style={{
+            background: `
+              radial-gradient(circle at 30% 30%, 
+                rgba(100, 200, 255, 0.15) 0%, 
+                transparent 50%
+              ),
+              linear-gradient(135deg, 
+                #1e3a5f 0%, 
+                #0d1f2d 25%, 
+                #1a4a3a 50%, 
+                #0d2818 75%, 
+                #1e3a5f 100%
+              )
+            `,
+            backgroundSize: `${size}px ${size}px`,
+            animation: `earthRotate ${isLarge ? 30 : 20}s linear infinite`,
+          }}
+        >
+          {/* Continental shapes overlay */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `
+                radial-gradient(ellipse 30% 20% at 25% 35%, rgba(34, 139, 34, 0.4) 0%, transparent 70%),
+                radial-gradient(ellipse 15% 25% at 55% 30%, rgba(34, 139, 34, 0.3) 0%, transparent 70%),
+                radial-gradient(ellipse 25% 15% at 70% 60%, rgba(34, 139, 34, 0.35) 0%, transparent 70%),
+                radial-gradient(ellipse 20% 30% at 30% 70%, rgba(34, 139, 34, 0.3) 0%, transparent 70%),
+                radial-gradient(ellipse 10% 10% at 85% 40%, rgba(255, 255, 255, 0.15) 0%, transparent 70%)
+              `,
+              backgroundSize: `${size}px ${size}px`,
+              animation: `earthRotate ${isLarge ? 30 : 20}s linear infinite`,
+            }}
+          />
+
+          {/* Ocean highlights */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `
+                radial-gradient(ellipse 40% 30% at 60% 50%, rgba(30, 144, 255, 0.2) 0%, transparent 60%),
+                radial-gradient(ellipse 30% 40% at 40% 40%, rgba(0, 100, 200, 0.15) 0%, transparent 60%)
+              `,
+            }}
+          />
+        </div>
+
+        {/* Atmosphere glow */}
+        <div
+          className="absolute inset-0 rounded-full pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle at 30% 30%, rgba(135, 206, 250, 0.2) 0%, transparent 50%)',
+            boxShadow: `
+              inset 0 0 ${size * 0.15}px ${size * 0.05}px rgba(135, 206, 250, 0.3),
+              0 0 ${size * 0.1}px ${size * 0.02}px rgba(245, 158, 11, 0.2)
+            `,
+          }}
+        />
+
+        {/* Gold rim accent */}
+        <div
+          className="absolute inset-0 rounded-full pointer-events-none"
+          style={{
+            border: '1px solid rgba(245, 158, 11, 0.3)',
+            boxShadow: 'inset 0 0 20px rgba(245, 158, 11, 0.1)',
+          }}
+        />
+
+        {/* City pins */}
+        {homeCity && (
+          <CityPin city={homeCity} isHome size={size} />
+        )}
+        {cities.filter(c => c.id !== homeCity?.id).map((city) => (
+          <CityPin key={city.id} city={city} size={size} />
+        ))}
+      </div>
     </div>
   );
 }
