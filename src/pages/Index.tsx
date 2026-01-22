@@ -5,7 +5,8 @@ import { CitySelector } from '@/components/CitySelector';
 import { TimeInput } from '@/components/TimeInput';
 import { TimelineView } from '@/components/TimelineView';
 import { HomeCitySelector } from '@/components/HomeCitySelector';
-import { Globe, Clock, Home } from 'lucide-react';
+import { EarthGlobe } from '@/components/EarthGlobe';
+import { Clock, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Index = () => {
@@ -47,9 +48,7 @@ const Index = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Globe className="h-6 w-6 text-primary" />
-              </div>
+              <EarthGlobe size={40} />
               <div>
                 <h1 className="text-xl font-bold text-foreground">TimeSync</h1>
                 <p className="text-sm text-muted-foreground">Compare timezones instantly</p>
