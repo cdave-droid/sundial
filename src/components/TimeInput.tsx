@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Clock, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
   Popover,
@@ -11,36 +10,105 @@ import {
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { City, getTimeInTimezone } from '@/lib/timezones';
 
 interface TimeInputProps {
   value: Date;
   onChange: (date: Date) => void;
+  homeCity: City;
 }
 
-export function TimeInput({ value, onChange }: TimeInputProps) {
-  const [hours, setHours] = useState(value.getHours().toString().padStart(2, '0'));
-  const [minutes, setMinutes] = useState(value.getMinutes().toString().padStart(2, '0'));
+// Convert a local time in a specific timezone to a UTC Date object
+function localTimeToUTC(year: number, month: number, day: number, hours: number, minutes: number, timezone: string): Date {
+  // Create a date string that represents the local time in the target timezone
+  const targetDate = new Date(Date.UTC(year, month, day, hours, minutes, 0, 0));
+  
+  // Get what this UTC time looks like in the target timezone
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: timezone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+  
+  // Binary search to find the correct UTC time that gives us the desired local time
+  let low = targetDate.getTime() - 24 * 60 * 60 * 1000;
+  let high = targetDate.getTime() + 24 * 60 * 60 * 1000;
+  
+  for (let i = 0; i < 20; i++) {
+    const mid = Math.floor((low + high) / 2);
+    const testDate = new Date(mid);
+    const parts = formatter.formatToParts(testDate);
+    const getPart = (type: string) => parts.find(p => p.type === type)?.value || '0';
+    
+    const testHour = parseInt(getPart('hour'));
+    const testMinute = parseInt(getPart('minute'));
+    const testDay = parseInt(getPart('day'));
+    const testMonth = parseInt(getPart('month')) - 1;
+    const testYear = parseInt(getPart('year'));
+    
+    const targetMinutes = year * 525600 + month * 43800 + day * 1440 + hours * 60 + minutes;
+    const testMinutes = testYear * 525600 + testMonth * 43800 + testDay * 1440 + testHour * 60 + testMinute;
+    
+    if (testMinutes === targetMinutes) {
+      return testDate;
+    } else if (testMinutes < targetMinutes) {
+      low = mid;
+    } else {
+      high = mid;
+    }
+  }
+  
+  return new Date(Math.floor((low + high) / 2));
+}
+
+export function TimeInput({ value, onChange, homeCity }: TimeInputProps) {
+  // Get the current time in the home city's timezone
+  const homeTime = getTimeInTimezone(value, homeCity.timezone);
+  
+  const [hours, setHours] = useState(homeTime.getHours().toString().padStart(2, '0'));
+  const [minutes, setMinutes] = useState(homeTime.getMinutes().toString().padStart(2, '0'));
 
   useEffect(() => {
-    setHours(value.getHours().toString().padStart(2, '0'));
-    setMinutes(value.getMinutes().toString().padStart(2, '0'));
-  }, [value]);
+    const newHomeTime = getTimeInTimezone(value, homeCity.timezone);
+    setHours(newHomeTime.getHours().toString().padStart(2, '0'));
+    setMinutes(newHomeTime.getMinutes().toString().padStart(2, '0'));
+  }, [value, homeCity.timezone]);
 
   const handleTimeChange = (newHours: string, newMinutes: string) => {
     const h = parseInt(newHours) || 0;
     const m = parseInt(newMinutes) || 0;
     
     if (h >= 0 && h < 24 && m >= 0 && m < 60) {
-      const newDate = new Date(value);
-      newDate.setHours(h, m);
+      // Convert the selected home city local time to UTC
+      const newDate = localTimeToUTC(
+        homeTime.getFullYear(),
+        homeTime.getMonth(),
+        homeTime.getDate(),
+        h,
+        m,
+        homeCity.timezone
+      );
       onChange(newDate);
     }
   };
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      const newDate = new Date(date);
-      newDate.setHours(parseInt(hours) || 0, parseInt(minutes) || 0);
+      const h = parseInt(hours) || 0;
+      const m = parseInt(minutes) || 0;
+      // Convert the selected date + current time to UTC using home city timezone
+      const newDate = localTimeToUTC(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        h,
+        m,
+        homeCity.timezone
+      );
       onChange(newDate);
     }
   };
@@ -49,10 +117,13 @@ export function TimeInput({ value, onChange }: TimeInputProps) {
     onChange(new Date());
   };
 
+  // Create a Date object for the calendar that represents the home city's current date
+  const calendarDate = new Date(homeTime.getFullYear(), homeTime.getMonth(), homeTime.getDate());
+
   return (
     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-zinc-400">Date</Label>
+        <Label className="text-sm font-medium text-zinc-400">Date ({homeCity.name})</Label>
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -63,13 +134,13 @@ export function TimeInput({ value, onChange }: TimeInputProps) {
               )}
             >
               <Calendar className="mr-2 h-4 w-4 text-amber-400" />
-              {format(value, "PPP")}
+              {format(calendarDate, "PPP")}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0 bg-zinc-800 border-amber-500/20" align="start">
             <CalendarComponent
               mode="single"
-              selected={value}
+              selected={calendarDate}
               onSelect={handleDateSelect}
               initialFocus
               className="pointer-events-auto"
@@ -79,7 +150,7 @@ export function TimeInput({ value, onChange }: TimeInputProps) {
       </div>
       
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-zinc-400">Time</Label>
+        <Label className="text-sm font-medium text-zinc-400">Time ({homeCity.name})</Label>
         <Popover>
           <PopoverTrigger asChild>
             <Button

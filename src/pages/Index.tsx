@@ -105,7 +105,7 @@ const Index = () => {
           <h3 className="text-lg font-semibold text-white mb-4">
             Set Your Meeting Time
           </h3>
-          <TimeInput value={baseTime} onChange={setBaseTime} />
+          <TimeInput value={baseTime} onChange={setBaseTime} homeCity={homeCity} />
         </section>
 
         {/* Cities Grid */}
